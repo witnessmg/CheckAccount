@@ -1,0 +1,116 @@
+extends _layout
+block append head
+  - var main_page = 'vid-namechk';
+  style(type="text/css")
+    :less
+      label.checkbox:nth-child(n+3) {
+        margin-left: 20px;
+      }
+      .row-fluid {
+        margin-top: 10px;
+      }
+      span.label.default {
+        font-size: 12px;
+        height:20px;
+        color: #555;
+        background-color: rgb(238, 238, 238);
+      }
+
+block append body
+  ul.breadcrumb
+    li
+      |当前所在位置：
+    li.active 身份检测
+  .well(style='min-height:400px;')
+    form.form-inline(onsubmit='return false;')
+      .input-append
+        input.span2.search-query#checkname(type='text')
+        button.btn#submit(type='submit') 搜索
+        button.btn.hide#cancel 取消
+      each val, category in allchks
+        label.checkbox.offset1
+          input(type='checkbox', name=category, checked)
+          |#{val.name}
+    i.offset1(style="color:gray") 注：绿色代表帐号存在，红色代表不存在，蓝色代表不符合名称规则或无法确定(名称规则可通过各标签的标题查看)
+    each chk, category in allchks
+      .page-header(class="#{category}")
+        h3=chk.name
+          if chk.desc
+            |<i style='margin-left:10px; font-size: 14px;'>#{chk.desc}</i>
+      div(class="#{category}")
+        - var index = 0, len = chk.targets.length, arr = [];
+        - while(true)
+          - arr = chk.targets.slice(index*6, (index+1) * 6);
+          - if(arr.length == 0 ) break;
+          .row-fluid
+            each v, i in arr
+              a.span2(href=chk.urls[index*6 + i], target='_blank')
+                span.span12.label.default(data-checkid="#{chk.cid*100 + index*6 + i}", title=chk.rules[index*6 + i])=v
+          - index++;
+  script
+    :coffee-script
+      window.checkarr = []
+      spanCheckInit = ->
+        $('span.label.span12 .pull-right').remove()
+        $('span.label.span12:not(.default)').removeClass('label-warning label-success label-info').addClass 'default'
+
+      spanCheck = (span, pos)->
+        checkid = $(span).data 'checkid'
+        $(span).removeClass('default').addClass 'label-warning'
+        $(span).append '<div class="pull-right"><img src="/35.gif" alt="正在验证.." /></div>'
+
+        jqXHR = $.post "/namechk/", (checkname: $('#checkname').val(), checkid: checkid), (data)->
+          console.log data
+          if data == '0'
+            $(span).addClass 'label-success'
+          else if data == '1'
+            $(span).addClass 'label-important'
+          else if data == '-1'
+            $(span).addClass 'label-info'
+        .always ->
+          $(span).removeClass 'label-warning'
+          $('div.pull-right', $(span)).remove()
+          window.checkarr[pos] = null
+          if window.checking
+            _$span = $('span.label.span12.default:visible:first')[0]
+            spanCheck _$span, pos if _$span
+            spanCheckEnd() if $('.label-warning,.default:visible').length == 0
+
+        window.checkarr[pos] = jqXHR
+
+      spanCheckEnd = ->
+        window.checking = false
+        $('#cancel').hide()
+        $('#submit').show()
+
+      $('#submit').click ->
+        return $('#cancel').click() if $('#cancel').is(':visible') || !$('#checkname').val()
+        window.checking = true
+        spanCheckInit()
+        $('#submit').hide()
+        $('#cancel').show()
+        $('span.label.span12.default:visible').each (index, elem)->
+          return false if index >= 10
+          spanCheck this, index
+        return false;
+
+      $('#cancel').click ->
+        window.checking = false
+        window.checkarr.forEach (e, i)->
+          e.abort() if e
+        window.checkarr = []
+        spanCheckInit()
+        $('#submit').show()
+        $('#cancel').hide()
+
+
+      $('input[type="checkbox"]').on 'change', (e)->
+        checked = $(this).is ':checked'
+        if checked then $(".#{this.name}").show() else $(".#{this.name}").hide()
+
+  script.
+    var _checkname = '#{checkname}';
+    if(_checkname) {
+      $('#checkname').val(_checkname);
+      $('#submit').click();
+    }

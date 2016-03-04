@@ -1,0 +1,148 @@
+doctype html
+html
+  head
+    block head
+      - var main_page = 'safesitex'
+      link(href='/assets.css',rel='stylesheet').
+      script(src='/assets.js').
+      //if IE 8
+        script(type='text/javascript').
+          var ie8 = 8;
+      script
+        :coffee-script
+          if !window.localStorage || typeof(ie8)!='undefined'
+            location.href = '/oldbrowser.html'
+        :coffee-script
+          window.jQuery = window.$ = require 'layerssss-todc-bootstrap'
+          $ ->
+            $('select').select2()
+            $('[title]').tooltip()
+            $(this).on 'click','.noclick',()->false
+            submit=()->
+              $form=$(this).closest('form')
+              return if $form.find('[type="submit"]').length
+              action=$form.attr('action')
+              method=$form.attr('method')
+              $img = $('<img src="/35.gif" alt="正在保存设置.." />')
+              if $(this).next().attr('src')!='/35.gif'
+                $img.insertAfter this
+              $.ajax
+                url: action
+                method: method
+                data: $form.serialize()
+                success: ()->
+                  $img.remove()
+
+            $('input[type="text"]').on 'change',submit
+            $('input[type="number"]').on 'change',(e)->
+              if $(this).val() isnt '' && !isNaN($(this).val()) && parseInt($(this).val())>=parseInt($(this).attr('min') || 0) && (if $(this).attr 'max' then parseInt($(this).val()) <= parseInt $(this).attr 'max' else true)
+                $(this).closest('div.control-group').removeClass 'error'
+                submit.call this
+              else
+                $(this).closest('div.control-group').addClass 'error'
+            $('input[type="checkbox"]').on 'change',submit
+            $('input[type="range"]').on 'change',submit
+            $('select').on 'change',submit
+      style(type="text/css")
+        :less
+          body{
+            font-family: "Microsoft YaHei", arial, sans-serif !important;
+            font-size: 14px;
+          }
+          header{
+            background-image: url('/bg_header.png');
+            img{
+              margin: 4px;
+            }
+            a{
+              color: #fff;
+              text-shadow: none!important;
+              font-size: 14px;
+            }
+            a.active {
+              color: #333333!important;
+            }
+          }
+          body{
+            background-color: #448aca;
+          }
+          footer{
+            color: #ccc;
+            padding: 20px 10px;
+            background-image: url('/bg_footer.png');
+          }
+          .main{
+            background-image: url('/bg.png');
+            padding-top: 70px;
+          }
+          .margin-no{
+            margin: 0;
+          }
+          .margin-left{
+            margin-left: 3px;
+          }
+          .padding{
+            padding: 3px;
+          }
+          .padding-no{
+            padding: 0 !important;
+          }
+          .border-no{
+            border-style: none !important;
+          }
+          .well{
+            background-color: #fff;
+          }
+          .high-line{
+            line-height: 2;
+          }
+          .navbar ul.nav>li>a{
+            color: #fff;
+            padding-top:10px;
+          }
+          .align-right{
+            text-align: right;
+          }
+  body
+    .navbar.navbar-fixed-top
+      header
+        .container
+          a(href='/', style='float:left;')
+            image(src='/logo_header.png')
+          if typeof(user)!='undefined'
+            ul.nav
+              li
+                a(href='/tasks/', class=main_page=='safesitex'?'active':'') 网站固定
+              li
+                a(href='/hash/', class=main_page=='hash'?'active':'') 密码哈希库
+              li
+                a(href='/vid/', class=main_page=='vid'?'active':'') 虚拟身份库
+              li
+                a(href='/namechk/', class=main_page=='vid-namechk'?'active':'') 身份检测
+              if user.isAdmin
+                li
+                  a(href='/admin/', class=main_page=='admin'?'active':'') 系统管理
+            ul.nav.pull-right
+              li
+                a(href=AUTHSERVERVIEW) #{user.email}
+              if !user.isAdmin
+                li
+                  a(href='/logs/', class=main_page=='logs'?'active':'')
+                    |消息
+                    if newLogsNum
+                      span.badge.badge-important=newLogsNum
+              li
+                a(href='/help/', class=main_page=='help'?'active':'') 帮助
+              li
+                a(href='/logout?httpmethod=post') 退出
+
+    .main
+      .container
+        block body
+          if messages.error!=''
+            .alert.alert-error
+              i.icon-exclamation-sign
+              !=messages.error
+    footer
+      .container
+        |WebImagerFrontend X version #{version}
