@@ -40,9 +40,19 @@ module.exports = discuzs =
       "http://bbs.ruoren.com/forum.php?mod=ajax&inajax=yes&infloat=register&handlekey=register&ajaxmenu=1&action=checkusername&username=#{encodeURIComponent name}"
       "http://www.moke8.com/forum.php?mod=ajax&inajax=yes&infloat=register&handlekey=register&ajaxmenu=1&action=checkusername&username=#{encodeURIComponent name}"
     ]
-
   }
   format: [
+      regex: ''
+      max: 15
+      min: 3
+    }
+    {
+      regex: ''
+      max: 15
+      min: 3
+    }
+    {
+      regex: ''
     {
       regex: ''
       max: 15

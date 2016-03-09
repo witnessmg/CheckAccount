@@ -15,6 +15,7 @@ emailExistence = require './mx_email-existence'
 
 categories = [email, extra, social, forum, appointment, discuz]
 
+# handler for each request
 module.exports = checkhandle =
   checktype: (id, name, cb) ->
     cid = Math.floor id / 100   # group id
@@ -34,6 +35,7 @@ module.exports = checkhandle =
     else
       return cb 'invalid'
 
+# input type validation format
 isEmail = (email)->
   return /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test email
 isTel = (tel)->
@@ -46,6 +48,7 @@ formatValidation = (str, reg, maxl, minl)->
     return true
   return false
 
+# particular check method
 mx_email_check = (cid, mid, name, cb) ->
 
 email_check = (cid, mid, name, cb) ->

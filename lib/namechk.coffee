@@ -380,7 +380,7 @@ forum =
           if !formatValidation name, /.*/, 15, 2
             return cb 'invalid'
           else
-            url = "http://my.home.news.cn/profile/passportCheck.do?name=nickName&value=#{name}"
+              url = "http://my.home.news.cn/profile/passportCheck.do?name=nickName&value=#{name}"
         request.post url, (e, r ,data)->
           return cb data.indexOf('1100') != -1
       when 9

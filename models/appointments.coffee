@@ -24,7 +24,6 @@ module.exports = appointments =
     "http://www.zhiji.com/"
     "http://www.juedui100.com/"
     "http://www.88999.com/login/Login.aspx"
-    "http://7651.com/site"
   ]
   validate_urls: {
     email:[

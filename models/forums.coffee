@@ -4,6 +4,18 @@ module.exports = forums =
   name: '论坛'
   cid: 3
   agent:''
+  option:
+    rule: '邮箱、用户名(3~15个字符)'
+    link_url: "http://www.im286.com/member.php?mod=logging&action=login"
+    validate_url:
+      email： "http://www.im286.com/forum.php?mod=ajax&inajax=yes&infloat=register&handlekey=register&ajaxmenu=1&action=checkemail&email=#{name}"
+      tel： ""
+      name: "http://www.im286.com/forum.php?mod=ajax&inajax=yes&infloat=register&handlekey=register&ajaxmenu=1&action=checkusername&username=#{name}"
+    referer: ""
+    format:
+      regex: /^\S*$/
+      max: 15
+      min: 3
   rules: [
     '邮箱、用户名(3~15个字符)'
     '邮箱、用户名(不超过8个中文)'

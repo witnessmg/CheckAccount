@@ -79,8 +79,6 @@ module.exports = socials =
         return cb data == 'OK'
 
     (i, name, cb)->
-      return cb 'invalid' if !isEmail name
-      url = validate_urls.email[2]
       request.get url, (e, r, data)->
         objdata = parseJson(data)
         if objdata and objdata.data and objdata.data.status
@@ -88,12 +86,6 @@ module.exports = socials =
         return cb 'invalid'
 
     (i, name, cb)->
-      if isTel name
-        url = validate_urls.email[3]
-      else if isEmail name
-        url = validate_urls.tel[3]
-      else
-        return cb 'invalid'
       request.get
         url: url
         headers:
@@ -105,8 +97,6 @@ module.exports = socials =
         return cb 'invalid'
 
     (i, name, cb)->
-      if !formatValidation name, format.regex[4], format.max, format.min
-        return cb 'invalid'
       request
         url: validate_urls.name[4]
         headers:
@@ -115,12 +105,10 @@ module.exports = socials =
         return cb data.indexOf('Available') != -1
 
     (i, name, cb)->
-      return cb 'invalid' if !isEmail name
       request.get validate_urls.email[5], (e,r,data)->
         return cb data.indexOf('"no": "0"') != -1
 
     (i, name, cb)->
-      return cb 'invalid' if !isEmail name
       request.get validate_urls.email[5], (e, r, data)->
         return cb data == '邮箱可用'
   ]
