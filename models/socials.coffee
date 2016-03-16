@@ -1,114 +1,121 @@
 module.exports = socials =
-  targets: ['开心网','人人网','chinaren','新浪微博','腾讯微博','百度空间','5460同学录']
+
   category: 'social'
-  cid: '2'
+
+  cid: 2
+
   name: '社交网络'
-  rules:[
-    '手机、邮箱'
-    '手机、邮箱'
-    '邮箱'
-    '手机、邮箱'
-    '用户ID(6~20位，由字母、数字、下划线或减号构成)'
-    '邮箱'
-    '邮箱'
-  ]
-  agent: ''
-  urls:[
-    "http://www.kaixin001.com/"
-    "http://www.renren.com/"
-    "http://class.chinaren.com/index.jsp"
-    "http://weibo.com/"
-    "http://t.qq.com/login.php"
-    "http://hi.baidu.com/"
-    "http://sns.5460.net/"
-  ]
-  validate_urls: {
-    email:
-      "http://reg.kaixin001.com/interface/checkemail.php?email=#{name}"
-      "http://reg.renren.com/AjaxRegisterAuth.do?authType=email&value=#{name}"
-      "http://class.chinaren.com/a/passport/checkuser.do?passport=#{name}"
-      "http://weibo.com/signup/v5/formcheck?type=email&value=#{name}"
-      ""
-      "https://passport.baidu.com/v2/?regmailcheck&token=b959992e7171c26510acf1db7572696b&tpl=qing&apiver=v3&tt=1376224080016&email=#{name}&callback=bd__cbs__woibgk"
-      "http://sns.5460.net/pages/Register/auth/zhuce!zhuce.action?email=#{name}"
-    tel:
-      "http://reg.kaixin001.com/interface/checknickname.php?rg=mobile&nickname=#{name}"
-      "http://reg.renren.com/AjaxRegisterAuth.do?authType=email&stage=3&value=#{name}"
-      ""
-      "http://weibo.com/signup/v5/formcheck?type=mobilesea&zone=0086&value=#{name}"
-      ""
-      ""
-    name:
-      ""
-      ""
-      ""
-      ""
-      "http://api.t.qq.com/old/checkAccount.php?type=emailreg&account=#{name}"
-      ""
-      ""
-  }
-  referer: [
-    ""
-    ""
-    ""
-    "http://weibo.com/signup/signup.php?ps=u3&lang=zh"
-    "http://zc.qq.com/iframe/12/reg.html"
-    ""
-  ]
-  format: [
-    undefined
-    undefined
-    undefined
-    undefined
+
+  options:
     {
+      info:
+        _target: '开心网'
+        _rule: '手机、邮箱'
+        _href: "http://www.kaixin001.com/"
 
-      regex: /^[a-zA-Z][a-zA-Z0-9_\-]*$/
-      min: 6
-      max: 20
+      req:
+        _email:
+          url: "http://reg.kaixin001.com/interface/checkemail.php?email=#{name}"
+          method: 'GET'
+          resultkeyword: '0'
+
+        _tel:
+          url: "http://reg.kaixin001.com/interface/checknickname.php?rg=mobile&nickname=#{name}"
+          method: 'GET'
+          resultkeyword: '0'
     }
-    undefined
-    undefined
-  ]
-  check: [
-    (i, name, cb)->
-      request.get url, (e, r, data)->
-        return cb data == '0'
+    {
+      info:
+        _target: '人人网'
+        _rule: '手机、邮箱'
+        _href: "http://www.renren.com/"
 
-    (i, name, cb)->
-      request.post url, (e, r, data)->
-        return cb data == 'OK'
+      req:
+        _email:
+          url: "http://reg.renren.com/AjaxRegisterAuth.do?authType=email&value=#{name}"
+          method: 'POST'
+          resultkeyword: 'OK'
 
-    (i, name, cb)->
-      request.get url, (e, r, data)->
-        objdata = parseJson(data)
-        if objdata and objdata.data and objdata.data.status
-          return cb objdata.data.status == '0'
-        return cb 'invalid'
+        _tel:
+          url: "http://reg.renren.com/AjaxRegisterAuth.do?authType=email&stage=3&value=#{name}"
+          method: 'POST'
+          resultkeyword: 'OK'
+    }
+    {
+      info:
+        _target: 'chinaren'
+        _rule: '邮箱'
+        _href: "http://class.chinaren.com/index.jsp"
 
-    (i, name, cb)->
-      request.get
-        url: url
-        headers:
-          Referer: Referer[3]
-      , (e, r, data)->
-        objdata = parseJson(data)
-        if objdata and objdata.type
-          return cb objdata.data.type == 'ok'
-        return cb 'invalid'
+      req:
+        _email:
+          url: "http://class.chinaren.com/a/passport/checkuser.do?passport=#{name}"
+          method: 'GET'
+          resultkeyword: '0'
+    }
+    {
+      info:
+        _target: '新浪微博'
+        _rule: '手机、邮箱'
+        _href: "http://weibo.com/"
 
-    (i, name, cb)->
-      request
-        url: validate_urls.name[4]
-        headers:
-          Referer: Referer[4]
-      ,(e, r, data)->
-        return cb data.indexOf('Available') != -1
+      req:
+        _email:
+          url: "http://weibo.com/signup/v5/formcheck?type=email&value=#{name}"
+          method: 'GET'
+          param:
+            headers:
+              Referer: "http://weibo.com/signup/signup.php?ps=u3&lang=zh"
+          resultkeyword:'OK'
 
-    (i, name, cb)->
-      request.get validate_urls.email[5], (e,r,data)->
-        return cb data.indexOf('"no": "0"') != -1
+        _tel:
+          url: "http://weibo.com/signup/v5/formcheck?type=mobilesea&zone=0086&value=#{name}"
+          method: 'GET'
+          param:
+            headers:
+              Referer: "http://weibo.com/signup/signup.php?ps=u3&lang=zh"
+          resultkeyword:'OK'
+    }
+    {
+      info:
+        _target: '腾讯微博'
+        _rule: '用户ID(6~20位，由字母、数字、下划线或减号构成)'
+        _href: "http://t.qq.com/login.php"
 
-    (i, name, cb)->
-      request.get validate_urls.email[5], (e, r, data)->
-        return cb data == '邮箱可用'
-  ]
+      req:
+        _name:
+          url: "http://api.t.qq.com/old/checkAccount.php?type=emailreg&account=#{name}"
+          method: 'GET'
+          param:
+            headers:
+              Referer: "http://zc.qq.com/iframe/12/reg.html"
+          format:
+            regex: /^[a-zA-Z][a-zA-Z0-9_\-]*$/
+            max: 20
+            min: 6
+          resultkeyword: 'Available'
+    }
+    {
+      info:
+        _target: '百度空间'
+        _rule: '邮箱'
+        _href: "http://hi.baidu.com/"
+
+      req:
+        _email:
+          url: "https://passport.baidu.com/v2/?regmailcheck&token=b959992e7171c26510acf1db7572696b&tpl=qing&apiver=v3&tt=1376224080016&email=#{name}&callback=bd__cbs__woibgk"
+          method: 'GET'
+          resultkeyword: '"no": "0"'
+    }
+    {
+      info:
+        _target: '5460同学录'
+        _rule: '邮箱'
+        _href: "http://sns.5460.net/"
+
+      req:
+        _email:
+          url: "http://sns.5460.net/pages/Register/auth/zhuce!zhuce.action?email=#{name}"
+          method: 'GET'
+          resultkeyword: '邮箱可用'
+    }

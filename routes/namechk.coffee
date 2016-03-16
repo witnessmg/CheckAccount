@@ -20,6 +20,6 @@ router.post '/', (req, res, next)->
     if r == 'invalid'
       res.end '-1'
     else
-      res.end if r then '1' else '0'
+      res.end if r then '1' else '0'        # 1 -> not exist , 0 -> exist
 
 module.exports = router

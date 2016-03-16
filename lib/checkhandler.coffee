@@ -9,30 +9,34 @@ extra = require './models/extras'
 social = require './models/socials'
 forum = require './models/forums'
 appointment = require './models/appointment'
-discuz =require './models/discuz'
+discuz = require './models/discuz'
+mall = require './models/malls'
 
 emailExistence = require './mx_email-existence'
 
-categories = [email, extra, social, forum, appointment, discuz]
+categories = [email, extra, social, forum, appointment, discuz, mall]
 
 # handler for each request
 module.exports = checkhandle =
   checktype: (id, name, cb) ->
     cid = Math.floor id / 100   # group id
     mid = id % 100              # member id
-    if categories[cid].validate_urls.email[mid] && isEmail name
-      if cid === 0
+    option = categories[cid].options[mid].req;  # get a particular request details.
+    if option_email && isEmail name  # Email
+      if cid === 0 && option._
         mx_email_check cid, mid, name, cb
       else
         email_check cid, mid, name, cb
-    else if categories[cid].validate_urls.tel[mid] && isTel name
+
+    else if option._tel[mid] && isTel name  # Tel
         tel_check cid, mid, name, cb
-    else if categories[cid].validate_urls.name[mid] && categories[id].format
-      it =categories[id].format
-      if !formatValidation name, it.regex, it.max, it.min
+
+    else if option._name[mid] && option._name.format  # Name
+      if !formatValidation name, option._name.format.regex, option._name.format.max, option._name.format.min   # invalid Name, back
         return cb 'invalid'
       name_check cid, mid, name, cb
-    else
+
+    else   # invalid format, back
       return cb 'invalid'
 
 # input type validation format
@@ -50,12 +54,18 @@ formatValidation = (str, reg, maxl, minl)->
 
 # particular check method
 mx_email_check = (cid, mid, name, cb) ->
-
+  emailExistence
 email_check = (cid, mid, name, cb) ->
-  url = categories[cid].validate_urls.email[mid]
-
+  sendInfo = categories[cid].options[mid].req._email
+  if sendInfo.method = 'GET'
+    if(param)
+    request.get sendInfo.url, (e, r, data) ->
+    return cb data && data.indexOf(sindInfo.resultkeyword) != -1
+  else sendInfo.method = 'POST'
+    request.g
 tel_check = (cid, mid, name, cb) ->
   url = categories[cid].validate_urls.tel[mid]
 
 name_check = (cid, mid, name, cb) ->
   url = categories[cid].validate_urls.name[mid]
+  cb

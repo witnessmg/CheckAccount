@@ -69,22 +69,15 @@ email =
       when 4
         if !formatValidation name, /^[a-zA-Z][a-zA-Z0-9_\-\.]*$/, 16, 4
           return cb 'invalid'
-        request.get "http://passport.sohu.com/jsonajax/checkusername.action?domain=sohu.com&appid=1000&mobileReg=false&shortname=#{name}", (e, r, data)->
-          objdata = parseJson(data)
-          if objdata and objdata.status
-            status = objdata.status
-            return cb status == '0'
-        return cb 'invalid'
+        request.post "http://passport.sohu.com/signup/check_email", form: {email: "#{name}@sohu.com"}, (e, r, data) ->
+          return cb (data.indexOf '0') != -1
       when 5
         if !formatValidation name, /^[a-zA-Z0-9_\-\.]*$/, 18, 6
           return cb 'invalid'
         request.get "http://web.mail.tom.com/webmail/register/checkname.action?userName=#{name}", (e, r, data)->
-          objdata = parseJson(data)
-          if objdata and objdata.isUserNameExist
-            return cb objdata.isUserNameExist
-        return cb 'invalid'
+          return cb (data.indexOf 'true') != -1
       when 6
-        # return cb 'invalid' if !isTel(name) && !formatValidation name, /^[a-z][a-zA-Z0-9_]*$/
+        #return cb 'invalid' if !isTel(name) && !formatValidation name, /^[a-z][a-zA-Z0-9_]*$/
         request.get "https://account.sogou.com/web/account/checkusername?username=#{name}", (e, r, data)->
           objdata = parseJson(data)
           if objdata and objdata.status
@@ -139,7 +132,7 @@ extra =
         if isTel name
           url = "#{url}&mobileNo=#{name}"
         else if isEmail name
-          url = "#{url}&countryMobileNo=86&emailNo=#{name}"
+          url = "#{url}"
         else
           if !formatValidation name, /^[a-zA-Z0-9]*$/, 12, 6
             return cb 'invalid'
@@ -341,7 +334,7 @@ forum =
           return cb data.indexOf('\\"status\\":\\"3\\"') != -1 if isTel name
       when 3
         return cb 'invalid' if !isEmail name
-        url = "http://reg.163.com/services/checkUsername?username=#{name}&product=urs"
+        url =
         request.get url, (e, r, data)->
           return cb data.indexOf("User does not exist") != -1
       when 4
