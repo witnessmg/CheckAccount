@@ -6,7 +6,7 @@ module.exports = socials =
 
   name: '社交网络'
 
-  options:
+  members:
     {
       info:
         _target: '开心网'

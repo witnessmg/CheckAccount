@@ -1,9 +1,14 @@
 module.exports = emails =
+
   cid: 0
+
   category: 'email'
+
   name: '邮箱'
+
   desc: '若待检测的为邮箱帐号，则该项只检测"@"之前的用户名'
-  options: [
+
+  members: [
       {
         info:
           _target: '163邮箱'

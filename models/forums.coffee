@@ -8,7 +8,7 @@ module.exports = forums =
 
   agent:''
 
-  option:
+  members:
     {
       info:
         _target: '落伍者'

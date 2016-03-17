@@ -6,32 +6,37 @@ module.exports = extras =
 
   name: '其他'
 
-  options:
+  members:
     {
       info:
+
         _target: '芒果网'
         _rule: '手机、邮箱、用户ID(6~12位，字母或数字)'
         _href: "http://www.mangocity.com/mbrweb/login/init.action"
 
       req:
         _email:
+
           url: "http://www.mangocity.com/mbrweb/validate/validateVerifyCode.action?verifyCode=0297&countryMobileNo=86&emailNo=#{name}"
           method: 'POST'
-          resultkeyword: 'Y'
+          resultkeyword: 'N'
 
         _tel:
+
           url: "http://www.mangocity.com/mbrweb/validate/validateVerifyCode.action?verifyCode=0297&mobileNo=#{name}"
           method: 'POST'
-          resultkeyword: 'Y'
+          resultkeyword: 'N'
 
         _name:
-          url: "http://www.mangocity.com/mbrweb/validate/validateVerifyCode.action?verifyCode=0297&countryMobileNo=86&emailNo=#{name}"
+
+          url: "http://www.mangocity.com/mbrWebCenter/validate_new/validateUsername.action"
           method: 'POST'
-          resultkeyword: 'Y'
+          resultkeyword: 'N'
           format:
             max: 12
             min: 6
             regex: /^[a-zA-Z0-9]*$/
+
     }
     {
       info:

@@ -6,7 +6,7 @@ module.exports = malls =
 
   cid: 6
 
-  options:
+  members:
     {
       info:
         _target: '京东'
@@ -15,17 +15,20 @@ module.exports = malls =
 
       req:
         _email:
-          url: "https://reg.jd.com/validateuser/isEmailEngaged?email=#{name}"
+          options:
+            url: "https://reg.jd.com/validateuser/isEmailEngaged?email=#{name}"
           method: 'GET'
           resultkeyword: ['success', '0']
 
         _tel:
-          url: "https://reg.jd.com/validateuser/isMobileEngaged?mobile=#{name}"
+          options:
+            url: "https://reg.jd.com/validateuser/isMobileEngaged?mobile=#{name}"
           method: 'GET'
           resultkeyword: ['success','0']
 
         _name:
-          url: "https://reg.jd.com/validateuser/isPinEngaged?pin=#{name}"
+          options:
+            url: "https://reg.jd.com/validateuser/isPinEngaged?pin=#{name}"
           method: 'GET'
           resultkeyword: ['success', '0']
           format:
@@ -33,3 +36,21 @@ module.exports = malls =
             max: 20
             min: 4
     }
+    {
+      info:
+        _target: '易迅'
+        _rule: '手机号、易迅账号、第三方登录'
+        _href: 'www.yixun.com'
+
+      req:
+        _tel:
+          options:
+            url: 'https://ecclogin.yixun.com/login/sendidentifycode?callback=jQuery110209682811319362372_1458178814171&mobile=18918925172'
+            rejectUnauthorized: false
+            headers:
+              'Referer': 'https://ecclogin.yixun.com/login/loginui?appid=700024506&e_appid=1&e_surl=https://base.yixun.com/iframejump.html&e_other_login=1&e_height=420&e_wx_login=1'
+              'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.116 Safari/537.36'
+        # _name:
+        #   options:
+        #     url: ''
+   }
